@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import utez.edu.mx.florever.modules.question.Question;
 import utez.edu.mx.florever.modules.user.BeanUser;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -17,6 +18,9 @@ public class Form {
     private String description;
     private String type;
     private String url;
+
+    private Date created;
+    private Date expired;
 
     @ManyToOne
     @JoinColumn(name = "fk_creator")
@@ -93,5 +97,21 @@ public class Form {
         this.description = description;
         this.title = title;
         this.id = id;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public Date getExpired() {
+        return expired;
+    }
+
+    public void setExpired(Date expired) {
+        this.expired = expired;
     }
 }
