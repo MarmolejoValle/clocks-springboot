@@ -49,4 +49,20 @@ public class ROption {
     }
 
     public ROption() {}
+
+    public List<Response> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<Response> users) {
+        this.users = users;
+    }
+
+    public Boolean getType() {
+        return type;
+    }
+
+    public void setType(Boolean type) {
+        this.type = type;
+    }
 }
