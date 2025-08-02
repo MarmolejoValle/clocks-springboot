@@ -89,7 +89,7 @@ public class AuthServices {
 
             // Si no tiene rol asignado, asignar rol "cliente" por defecto
             if (payload.getRol() == null) {
-                Rol clienteRole = rolRepository.findByName("cliente").orElse(null);
+                Rol clienteRole = rolRepository.findByName("USER").orElse(null);
                 if (clienteRole != null) {
                     payload.setRol(clienteRole);
                 }
@@ -107,29 +107,5 @@ public class AuthServices {
         }
     }
 
-    @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public APIResponse registerFlorista(BeanUser payload) {
-        try {
-            BeanUser found = userRepository.findByEmail(payload.getEmail()).orElse(null);
-            if (found != null) {
-                return new APIResponse(
-                        HttpStatus.INTERNAL_SERVER_ERROR,
-                        true,
-                        "Usuario ya existe");
-            }
 
-            // Encripta la contraseña
-            payload.setPassword(PasswordEncoder.encode(payload.getPassword()));
-
-            userRepository.save(payload);
-
-            return new APIResponse("Florista registrado exitosamente", HttpStatus.CREATED, false, "");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new APIResponse(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    true,
-                    "Error al registrar florista");
-        }
-    }
 }
