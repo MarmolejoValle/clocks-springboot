@@ -1,9 +1,14 @@
 package utez.edu.mx.florever.modules.auth.dto;
 
 
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
+
 public class LoginRequestDTO {
 
+    @NotNull
     private String email;
+    @NotNull
     private String password;
 
     // Constructor vacío

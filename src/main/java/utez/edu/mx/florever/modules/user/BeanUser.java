@@ -1,6 +1,9 @@
 package utez.edu.mx.florever.modules.user;
 
 import jakarta.persistence.*;
+import utez.edu.mx.florever.modules.form.Form;
+import utez.edu.mx.florever.modules.question.Question;
+import utez.edu.mx.florever.modules.response.Response;
 import utez.edu.mx.florever.modules.role.Rol;
 
 import java.util.List;
@@ -32,6 +35,13 @@ public class BeanUser {
     @ManyToOne
     @JoinColumn(name = "id_rol", nullable = false)
     private Rol rol;
+
+    @OneToMany(mappedBy = "creator")
+    private List<Form> forms;
+
+    @OneToMany(mappedBy = "user")
+    private List<Response> responses;
+
 
     public BeanUser() {
     }
