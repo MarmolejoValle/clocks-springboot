@@ -1,5 +1,6 @@
 package utez.edu.mx.florever.modules.auth;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class AuthController {
     private AuthServices authServices;
 
     @PostMapping("")
-    public ResponseEntity<APIResponse> doLogin(@RequestBody LoginRequestDTO payload) {
+    public ResponseEntity<APIResponse> doLogin(@RequestBody @Valid LoginRequestDTO payload) {
         APIResponse response = authServices.doLogin(payload);
         return new ResponseEntity <>(response, response.getStatus());
     }
