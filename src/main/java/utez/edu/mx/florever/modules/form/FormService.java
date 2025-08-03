@@ -2,7 +2,6 @@ package utez.edu.mx.florever.modules.form;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +20,10 @@ import utez.edu.mx.florever.utils.APIResponse;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FormService {
@@ -75,6 +77,129 @@ public class FormService {
         catch (Exception e){
             System.out.println(e);
             return new APIResponse(HttpStatus.BAD_REQUEST , true, "Error al crear el formulario");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public APIResponse listForms(HttpServletRequest req) {
+        try {
+            String email = jwtUtils.resolveClaims(req, "sub");
+            List<Form> forms = formRepository.findAllByCreatorEmail(email);
+            List<FormDTO> formDTOs = new ArrayList<>();
+
+            for (Form form : forms) {
+                FormDTO dto = new FormDTO();
+                dto.setTitle(form.getTitle());
+                dto.setDescription(form.getDescription());
+                dto.setType(form.getType());
+                dto.setOpen(form.getOpen());
+                dto.setClosed(form.getClosed());
+
+                List<QuestionDTO> questionDTOs = new ArrayList<>();
+                for (Question question : form.getQuestions()) {
+                    QuestionDTO questionDTO = new QuestionDTO();
+                    questionDTO.setText(question.getText());
+
+                    List<OptionDTO> optionDTOs = new ArrayList<>();
+                    for (ROption option : question.getOptions()) {
+                        OptionDTO optionDTO = new OptionDTO();
+                        optionDTO.setValue(option.getValue());
+                        optionDTO.setType(option.getType());
+                        optionDTOs.add(optionDTO);
+                    }
+
+                    questionDTO.setOptions(optionDTOs);
+                    questionDTOs.add(questionDTO);
+                }
+
+                dto.setQuestions(questionDTOs);
+                formDTOs.add(dto);
+            }
+
+            return new APIResponse("Formularios encontrados", HttpStatus.OK, false, formDTOs);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return new APIResponse(HttpStatus.BAD_REQUEST, true, "Error al listar formularios");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public APIResponse getForm(Long id, HttpServletRequest req) {
+        try {
+            String email = jwtUtils.resolveClaims(req, "sub");
+            Form form = formRepository.findByIdAndCreatorEmail(id, email)
+                    .orElse(null);
+
+            if (form == null) {
+                return new APIResponse(HttpStatus.NOT_FOUND, true, "Formulario no encontrado");
+            }
+
+            FormDTO dto = new FormDTO();
+            dto.setTitle(form.getTitle());
+            dto.setDescription(form.getDescription());
+            dto.setType(form.getType());
+            dto.setOpen(form.getOpen());
+            dto.setClosed(form.getClosed());
+
+            List<QuestionDTO> questionDTOs = new ArrayList<>();
+            for (Question question : form.getQuestions()) {
+                QuestionDTO questionDTO = new QuestionDTO();
+                questionDTO.setText(question.getText());
+
+                List<OptionDTO> optionDTOs = new ArrayList<>();
+                for (ROption option : question.getOptions()) {
+                    OptionDTO optionDTO = new OptionDTO();
+                    optionDTO.setValue(option.getValue());
+                    optionDTO.setType(option.getType());
+                    optionDTOs.add(optionDTO);
+                }
+
+                questionDTO.setOptions(optionDTOs);
+                questionDTOs.add(questionDTO);
+            }
+
+            dto.setQuestions(questionDTOs);
+
+            return new APIResponse("Formulario encontrado", HttpStatus.OK, false, dto);
+        } catch (Exception e) {
+            return new APIResponse(HttpStatus.BAD_REQUEST, true, "Error al obtener el formulario");
+        }
+    }
+
+    @Transactional(rollbackFor = {Exception.class, SQLException.class})
+    public APIResponse update(Long id, FormDTO payload, HttpServletRequest req) {
+        try {
+            String email = jwtUtils.resolveClaims(req, "sub");
+            Form form = formRepository.findByIdAndCreatorEmail(id, email)
+                    .orElse(null);
+            if (form == null) {
+                return new APIResponse(HttpStatus.NOT_FOUND, true, "Formulario no encontrado");
+            }
+            form.setTitle(payload.getTitle());
+            form.setDescription(payload.getDescription());
+            form.setType(payload.getType());
+            form.setOpen(payload.getOpen());
+            form.setClosed(payload.getClosed());
+            formRepository.save(form);
+            return new APIResponse("Formulario actualizado correctamente", HttpStatus.OK, false, "");
+        } catch (Exception e) {
+            return new APIResponse(HttpStatus.BAD_REQUEST, true, "Error al actualizar el formulario");
+        }
+    }
+
+    @Transactional(rollbackFor = {Exception.class, SQLException.class})
+    public APIResponse delete(Long id, HttpServletRequest req) {
+        try {
+            String email = jwtUtils.resolveClaims(req, "sub");
+            Form form = formRepository.findByIdAndCreatorEmail(id, email)
+                    .orElse(null);
+            if (form == null) {
+                return new APIResponse(HttpStatus.NOT_FOUND, true, "Formulario no encontrado");
+            }
+            formRepository.delete(form);
+            return new APIResponse("Formulario eliminado correctamente", HttpStatus.OK, false, "");
+        } catch (Exception e) {
+            return new APIResponse(HttpStatus.BAD_REQUEST, true, "Error al eliminar el formulario");
         }
     }
 }
