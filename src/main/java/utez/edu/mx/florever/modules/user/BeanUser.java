@@ -1,5 +1,6 @@
 package utez.edu.mx.florever.modules.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import utez.edu.mx.florever.modules.form.Form;
 import utez.edu.mx.florever.modules.question.Question;
@@ -25,20 +26,20 @@ public class BeanUser {
 
     @Column(name = "email", nullable = false)
     private String email;
-
+    @JsonIgnore
     @Column(name = "password", nullable = false)
     private String password;
 
     @Column(name = "status", nullable = false)
     private Boolean status = true;
-
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "id_rol", nullable = false)
     private Rol rol;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "creator")
     private List<Form> forms;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Response> responses;
 

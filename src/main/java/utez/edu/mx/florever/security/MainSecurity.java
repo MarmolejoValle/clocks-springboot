@@ -38,6 +38,7 @@ public class MainSecurity {
             "/api/auth/**",
             "/api/form/**",
             "/api/question/**",
+            "/api/response/**"
     };
 
     @Autowired

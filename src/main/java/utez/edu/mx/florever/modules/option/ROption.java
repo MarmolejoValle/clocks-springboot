@@ -1,5 +1,6 @@
 package utez.edu.mx.florever.modules.option;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import utez.edu.mx.florever.modules.question.Question;
 import utez.edu.mx.florever.modules.response.Response;
@@ -14,13 +15,13 @@ public class ROption {
     private Long id;
 
     private String value;
-
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "fk_question")
     private Question question;
 
-    @OneToMany(mappedBy = "ROption")
-    private List<Response>  users;
+    @OneToMany(mappedBy = "op")
+    private List<Response>  responses;
 
     private Boolean type;
 
@@ -50,12 +51,12 @@ public class ROption {
 
     public ROption() {}
 
-    public List<Response> getUsers() {
-        return users;
+    public List<Response> getResponses() {
+        return responses;
     }
 
-    public void setUsers(List<Response> users) {
-        this.users = users;
+    public void setResponses(List<Response> users) {
+        this.responses = users;
     }
 
     public Boolean getType() {
