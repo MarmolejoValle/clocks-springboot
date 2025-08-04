@@ -95,27 +95,6 @@ public class FormService {
                 dto.setOpen(form.getOpen());
                 dto.setClosed(form.getClosed());
                 dto.setId(form.getId());
-
-                List<QuestionDTO> questionDTOs = new ArrayList<>();
-                for (Question question : form.getQuestions()) {
-                    QuestionDTO questionDTO = new QuestionDTO();
-                    questionDTO.setText(question.getText());
-                    questionDTO.setId(question.getId());
-
-                    List<OptionDTO> optionDTOs = new ArrayList<>();
-                    for (ROption option : question.getOptions()) {
-                        OptionDTO optionDTO = new OptionDTO();
-                        optionDTO.setValue(option.getValue());
-                        optionDTO.setType(option.getType());
-                        optionDTO.setId(option.getId());
-                        optionDTOs.add(optionDTO);
-                    }
-
-                    questionDTO.setOptions(optionDTOs);
-                    questionDTOs.add(questionDTO);
-                }
-
-                dto.setQuestions(questionDTOs);
                 formDTOs.add(dto);
             }
 
