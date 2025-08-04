@@ -1,12 +1,11 @@
 package utez.edu.mx.florever.modules.form;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import utez.edu.mx.florever.modules.question.Question;
 import utez.edu.mx.florever.modules.user.BeanUser;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -19,13 +18,11 @@ public class Form {
     private String title;
     private String description;
     private String type;
-    private String url;
-
     private LocalDateTime created;
     private LocalDateTime open;
     private LocalDateTime closed;
     private LocalDateTime expired;
-
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "fk_creator")
     private BeanUser creator;
@@ -77,14 +74,6 @@ public class Form {
         this.type = type;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     public List<Question> getQuestions() {
         return questions;
     }
@@ -93,10 +82,9 @@ public class Form {
         this.questions = questions;
     }
 
-    public Form(List<Question> questions, BeanUser creator, String url, String type, String description, String title, Long id) {
+    public Form(List<Question> questions, BeanUser creator, String type, String description, String title, Long id) {
         this.questions = questions;
         this.creator = creator;
-        this.url = url;
         this.type = type;
         this.description = description;
         this.title = title;

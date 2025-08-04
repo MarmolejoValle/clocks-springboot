@@ -1,8 +1,11 @@
 package utez.edu.mx.florever.modules.form.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+@JsonInclude(JsonInclude.Include.NON_NULL)
 
 public class FormDTO {
     private String title;
@@ -11,7 +14,15 @@ public class FormDTO {
     private LocalDateTime open;
     private LocalDateTime closed;
     private List<QuestionDTO>  questions;
+    private Long id;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
     public String getTitle() {
         return title;
     }

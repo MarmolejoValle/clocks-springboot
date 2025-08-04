@@ -1,5 +1,6 @@
 package utez.edu.mx.florever.modules.question;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import utez.edu.mx.florever.modules.form.Form;
 import utez.edu.mx.florever.modules.option.ROption;
@@ -13,6 +14,7 @@ public class Question {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "fk_form")
     private Form form;

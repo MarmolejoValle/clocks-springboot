@@ -94,17 +94,20 @@ public class FormService {
                 dto.setType(form.getType());
                 dto.setOpen(form.getOpen());
                 dto.setClosed(form.getClosed());
+                dto.setId(form.getId());
 
                 List<QuestionDTO> questionDTOs = new ArrayList<>();
                 for (Question question : form.getQuestions()) {
                     QuestionDTO questionDTO = new QuestionDTO();
                     questionDTO.setText(question.getText());
+                    questionDTO.setId(question.getId());
 
                     List<OptionDTO> optionDTOs = new ArrayList<>();
                     for (ROption option : question.getOptions()) {
                         OptionDTO optionDTO = new OptionDTO();
                         optionDTO.setValue(option.getValue());
                         optionDTO.setType(option.getType());
+                        optionDTO.setId(option.getId());
                         optionDTOs.add(optionDTO);
                     }
 
@@ -127,30 +130,42 @@ public class FormService {
     public APIResponse getForm(Long id, HttpServletRequest req) {
         try {
             String email = jwtUtils.resolveClaims(req, "sub");
-            Form form = formRepository.findByIdAndCreatorEmail(id, email)
+
+            Form formCreator = formRepository.findByIdAndCreatorEmail(id, email)
                     .orElse(null);
 
+            if (formCreator != null) {
+
+                return new APIResponse("Formulario encontrado",HttpStatus.OK, true, formCreator);
+            }
+            Form form = formRepository.findById(id).orElse(null);
+
             if (form == null) {
+
                 return new APIResponse(HttpStatus.NOT_FOUND, true, "Formulario no encontrado");
             }
-
             FormDTO dto = new FormDTO();
             dto.setTitle(form.getTitle());
             dto.setDescription(form.getDescription());
             dto.setType(form.getType());
             dto.setOpen(form.getOpen());
             dto.setClosed(form.getClosed());
+            dto.setId(form.getId());
 
             List<QuestionDTO> questionDTOs = new ArrayList<>();
             for (Question question : form.getQuestions()) {
                 QuestionDTO questionDTO = new QuestionDTO();
                 questionDTO.setText(question.getText());
+                questionDTO.setId(question.getId());
+
 
                 List<OptionDTO> optionDTOs = new ArrayList<>();
                 for (ROption option : question.getOptions()) {
                     OptionDTO optionDTO = new OptionDTO();
                     optionDTO.setValue(option.getValue());
                     optionDTO.setType(option.getType());
+                    optionDTO.setId(option.getId());
+
                     optionDTOs.add(optionDTO);
                 }
 
@@ -161,6 +176,8 @@ public class FormService {
             dto.setQuestions(questionDTOs);
 
             return new APIResponse("Formulario encontrado", HttpStatus.OK, false, dto);
+
+
         } catch (Exception e) {
             return new APIResponse(HttpStatus.BAD_REQUEST, true, "Error al obtener el formulario");
         }
